@@ -1,0 +1,26 @@
+Users Table:
+UserID (PK)
+Username
+Email
+PasswordHash
+CreatedAt
+LastLogin
+
+Summaries Table:
+SummaryID (PK)
+UserID (FK) 
+OriginalURL 
+SummaryText 
+CreatedAt 
+Title 
+
+SavedSummaries Table:
+SavedSummaryID (PK)
+UserID (FK) 
+SummaryID (FK) 
+FolderName 
+
+
+- A Users record can have multiple Summaries. (One-to-Many)
+- A Users record can have multiple SavedSummaries. (One-to-Many)
+- A Summaries record can belong to multiple SavedSummaries. (One-to-Many)
