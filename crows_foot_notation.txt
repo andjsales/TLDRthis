@@ -3,8 +3,6 @@ UserID (PK)
 Username
 Email
 PasswordHash
-CreatedAt
-LastLogin
 
 Summaries Table:
 SummaryID (PK)

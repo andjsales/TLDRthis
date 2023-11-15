@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+<h1>Create An Account:</h1>
+<form action="{{url_for('signup')}}">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.first_name.label }}
+        {{ form.first_name }}
+        <br><br>
+        {{ form.last_name.label }}
+        {{ form.last_name }}
+        <br><br>
+        {{ form.username.label }}
+        {{ form.username }}
+        <br><br>
+        {{ form.password.label }}
+        {{ form.password }}
+        <br><br>
+        {{ form.email.label }}
+        {{ form.email }}
+        <br><br>
+    </div>
+    <button type="submit">Signup</button>
+</form>
+{% endblock %}

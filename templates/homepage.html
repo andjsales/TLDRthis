@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Homepage{% endblock %}
+
+{% block content %}
+<h1>TLDRthis</h1>
+<form action="{{ url_for('homepage') }}" method="POST">
+    {{ form.hidden_tag() }}
+
+    <div>
+        {{ form.title.label }}
+        {{ form.title }}
+        <br><br>
+        {{ form.url.label }}
+        {{ form.url(size=40) }}
+        {% if form.url.errors %}
+        <ul class="errors">
+            {% for error in form.url.errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    <br>
+    <div>
+        <button type="submit">TLDR this!</button>
+    </div>
+</form>
+{% endblock %}

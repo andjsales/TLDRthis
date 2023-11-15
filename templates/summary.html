@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>TLDR Result</h1>
+
+<div>
+    <h2>{{ summary.title }}</h2>
+    <p>{{ summary.summary_text }}</p>
+</div>
+
+<a href="{{ url_for('homepage') }}">
+    << Homepage</a>
+        {% endblock %}
