@@ -3,7 +3,8 @@
 
 {% block content %}
 <h1>Create An Account:</h1>
-<form action="{{url_for('signup')}}">
+<hr>
+<form action="{{url_for('signup')}}" method="POST">
     {{ form.hidden_tag() }}
     <div>
         {{ form.first_name.label }}

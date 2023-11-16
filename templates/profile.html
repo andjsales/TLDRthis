@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('show_summaries', user_id=user.id) }}">View Summaries</a>
+{% endblock %}

@@ -3,7 +3,8 @@
 
 {% block content %}
 <h1>TLDRthis</h1>
-<form action="{{ url_for('homepage') }}" method="POST">
+<hr>
+<form action="{{ url_for('summary_form') }}" method="POST">
     {{ form.hidden_tag() }}
 
     <div>
@@ -11,7 +12,7 @@
         {{ form.title }}
         <br><br>
         {{ form.url.label }}
-        {{ form.url(size=40) }}
+        {{ form.url }}
         {% if form.url.errors %}
         <ul class="errors">
             {% for error in form.url.errors %}
@@ -22,7 +23,7 @@
     </div>
     <br>
     <div>
-        <button type="submit">TLDR this!</button>
+        <button type="submit" class="btn btn-primary btn-lg">tldr</button>
     </div>
 </form>
 {% endblock %}

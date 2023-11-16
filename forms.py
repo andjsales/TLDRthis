@@ -7,8 +7,8 @@ class SummarizeContent(FlaskForm):
     """
     TLDR form
     """
-    title = StringField("Content Title")
-    url = URLField("Content Url")
+    title = StringField("Summary Title: ")
+    url = URLField("URL: ")
 
 
 class LoginForm(FlaskForm):

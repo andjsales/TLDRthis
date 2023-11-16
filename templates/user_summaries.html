@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Saved Summaries{% endblock %}
+
+{% block content %}
+<h1>{{ user.username}}'s Saved Summaries</h1>
+<hr>
+<br>
+
+{% for summary in summaries %}
+<div class="container-sm">
+    <h2>{{ summary.title }}</h2>
+    <p>{{ summary.summary_text }}</p>
+    <br>
+    <hr>
+</div>
+{% endfor %}
+{% endblock %}
