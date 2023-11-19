@@ -2,27 +2,30 @@
 {% block title %}Create Account{% endblock %}
 
 {% block content %}
-<h1>Create An Account:</h1>
-<hr>
-<form action="{{url_for('signup')}}" method="POST">
-    {{ form.hidden_tag() }}
-    <div>
-        {{ form.first_name.label }}
-        {{ form.first_name }}
-        <br><br>
-        {{ form.last_name.label }}
-        {{ form.last_name }}
-        <br><br>
-        {{ form.username.label }}
-        {{ form.username }}
-        <br><br>
-        {{ form.password.label }}
-        {{ form.password }}
-        <br><br>
-        {{ form.email.label }}
-        {{ form.email }}
-        <br><br>
-    </div>
-    <button type="submit">Signup</button>
-</form>
+<div class="container">
+    <h1>New Account:</h1>
+    <p>Create a free account to save TLDRs!</p>
+    <hr><br>
+    <form action="{{url_for('signup')}}" method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.first_name.label }}
+            {{ form.first_name }}
+            <br><br>
+            {{ form.last_name.label }}
+            {{ form.last_name }}
+            <br><br>
+            {{ form.username.label }}
+            {{ form.username }}
+            <br><br>
+            {{ form.password.label }}
+            {{ form.password }}
+            <br><br>
+            {{ form.email.label }}
+            {{ form.email }}
+            <br><br>
+        </div><br>
+        <button type="submit">Signup</button>
+    </form>
+</div>
 {% endblock %}

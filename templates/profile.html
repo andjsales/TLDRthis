@@ -13,7 +13,8 @@
 <hr><br>
 <a href="{{ url_for('logout')}}">Logout</a>
 <br><br>
-<hr><br>
+<hr><br><br>
+<p><b><i>!! DANGER ZONE !!</i></b></p><br>
 <form action="{{ url_for('delete_account', user_id=user.id) }}" method="POST"
     onsubmit="return confirm('Are you sure you want to delete your account?');">
     <button type="submit" class="btn btn-danger">Delete Account</button>
