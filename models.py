@@ -52,6 +52,20 @@ class User(db.Model):
                 return user
         return False
 
+    @classmethod
+    def edit(cls, first_name, last_name, username, email):
+        """
+        Edit profile
+        """
+        user = cls(
+            first_name=first_name,
+            last_name=last_name,
+            username=username,
+            email=email,
+        )
+        db.session.add(user)
+        return user
+
 
 class Summary(db.Model):
     __tablename__ = "summaries"
@@ -63,6 +77,7 @@ class Summary(db.Model):
     title = db.Column(db.Text, nullable=False)
     created_at = db.Column(
         db.DateTime, default=db.func.current_timestamp(), nullable=False)
+    folder_id = db.Column(db.Integer, db.ForeignKey('folders.id'))
 
 
 class SavedSummary(db.Model):
@@ -73,3 +88,12 @@ class SavedSummary(db.Model):
     summary_id = db.Column(db.Integer, db.ForeignKey(
         'summaries.id'), nullable=False)
     folder_name = db.Column(db.Text, nullable=False)
+
+
+class Folder(db.Model):
+    __tablename__ = "folders"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    folder_name = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    summaries = db.relationship('Summary', backref='folder', lazy=True)

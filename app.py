@@ -1,8 +1,9 @@
-from flask import Flask, render_template, redirect, request, g, session
+from flask import Flask, render_template, redirect, request, g, session, flash, url_for
 import requests
+import bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from models import db, connect_db, User, Summary, SavedSummary
-from forms import SummarizeContent, LoginForm, SignupForm
+from models import db, connect_db, User, Summary, SavedSummary, Folder
+from forms import SummarizeContent, LoginForm, SignupForm, EditProfileForm
 from secrets_1 import key
 from flask_migrate import Migrate
 
@@ -41,7 +42,9 @@ def fetch_summary(url):
 
 @app.before_request
 def add_user_to_g():
-    """If we're logged in, add curr user to Flask global."""
+    """
+    Add curr user to Flask global
+    """
     if CURR_USER_KEY in session:
         g.user = User.query.get(session[CURR_USER_KEY])
     else:
@@ -61,6 +64,9 @@ def do_logout():
         del session[CURR_USER_KEY]
 
 
+# SIGNUP, LOGIN, LOGOUT, HOMEPAGE
+
+
 @app.route('/')
 def redirect_homepage():
     """
@@ -69,29 +75,32 @@ def redirect_homepage():
     return redirect("/homepage")
 
 
-@app.route('/homepage', methods=["GET"])
+@app.route('/homepage', methods=["GET", "POST"])
 def homepage():
-    form = SummarizeContent()
-    return render_template('homepage.html', user=g.user, form=form)
-
-
-@app.route('/homepage', methods=["POST"])
-def summary_form():
     """
-    TLDR form on homepage
+    Process and show TLDR form
     """
     form = SummarizeContent()
-    user = g.user
+    summary = None
+
+    if g.user:
+        folders = Folder.query.filter_by(user_id=g.user.id).all()
+    else:
+        folders = []
+        flash("Please log in to view and save summaries.", "info")
+        return redirect(url_for('show_login_form'))
+
     if form.validate_on_submit():
         summary_data = fetch_summary(form.url.data)
         summary = Summary(
             original_url=form.url.data,
             summary_text=' '.join(summary_data['summary']),
-            user_id=g.user,
+            user_id=g.user.id,
             title=form.title.data)
         db.session.add(summary)
         db.session.commit()
-    return render_template('summary.html', summary=summary, form=form, user=g.user)
+
+    return render_template('homepage.html', form=form, summary=summary, folders=folders, user=g.user)
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -132,26 +141,170 @@ def logout():
     return redirect('/login')
 
 
+# SUMMARY ROUTES
+
+
 @app.route('/summary/<int:summary_id>', methods=['GET', 'POST'])
 def summary(summary_id):
     """
     Output summary results
     """
     summary = Summary.query.get_or_404(summary_id)
-    return render_template('summary.html', summary=summary)
+    folders = Folder.query.all()
+    return render_template('summary.html', summary=summary, user=g.user, folders=folders)
 
 
-@app.route('/profile/<int:user_id>')
-def profile(user_id):
-    user = User.query.get_or_404(user_id)
-    return render_template('profile.html', user=user)
+@app.route('/summary/<int:summary_id>/save', methods=["POST"])
+def save_summary(summary_id):
+    """
+    - Save the summary.
+    - Create a new folder if a new folder name is provided.
+    """
+    new_folder_name = request.form.get('newFolderName')
+    summary = Summary.query.get_or_404(summary_id)
+
+    if not g.user:
+        flash('You need to be logged in to save summaries.', 'warning')
+        return redirect(url_for('login'))
+
+    summary.user_id = g.user.id
+
+    selected_folder_id = request.form.get('folder')
+    if selected_folder_id and selected_folder_id != 'new':
+        summary.folder_id = int(selected_folder_id)
+    else:
+        folder = Folder.query.filter_by(
+            folder_name=new_folder_name, user_id=g.user.id).first()
+        if not folder:
+            folder = Folder(folder_name=new_folder_name, user_id=g.user.id)
+            db.session.add(folder)
+            db.session.commit()
+            flash('New folder created.', 'success')
+        summary.folder_id = folder.id
+    db.session.add(summary)
+    db.session.commit()
+    flash('Summary saved successfully.', 'success')
+    return redirect(url_for('summary', summary_id=summary.id))
+
+
+@app.route('/summaries/<int:summary_id>/delete', methods=["POST"])
+def delete_summary(summary_id):
+    """
+    Delete a summary
+    """
+    summary = Summary.query.get_or_404(summary_id)
+    folder_id = summary.folder_id
+
+    if g.user.id != summary.user_id:
+        flash('You do not have permission to delete this summary.', 'danger')
+        return redirect(url_for('homepage'))  # Or some other appropriate route
+
+    db.session.delete(summary)
+    db.session.commit()
+    flash('Summary deleted successfully.', 'success')
+    return redirect(url_for('show_folder_contents', user_id=g.user.id, folder_id=folder_id))
 
 
 @app.route('/summaries/<int:user_id>')
 def show_summaries(user_id):
+    """
+    Show user tldr summary history
+    """
     user = User.query.get_or_404(user_id)
-    summaries = Summary.query.all()
+    summaries = Summary.query.filter_by(
+        user_id=user_id).all()
     return render_template('user_summaries.html', user=user, summaries=summaries)
+
+# PROFILE ROUTES
+
+
+@app.route('/profile/<int:user_id>')
+def profile(user_id):
+    """
+    Render user profile
+    """
+    user = User.query.get_or_404(user_id)
+    return render_template('profile.html', user=g.user)
+
+
+@app.route('/profile/<int:user_id>/edit', methods=["GET", "POST"])
+def edit_profile(user_id):
+    """
+    Edit user profile
+    """
+    form = EditProfileForm()
+    user = User.query.get_or_404(user_id)
+
+    if form.validate_on_submit():
+        user.first_name = form.first_name.data
+        user.last_name = form.last_name.data
+        user.username = form.username.data
+        user.email = form.email.data
+        user.password = form.password.data
+        db.session.commit()
+        return redirect(url_for('profile', user_id=user.id))
+
+    return render_template('profile_edit.html', user=user, form=form)
+
+
+@app.route('/profile/<int:user_id>', methods=["POST"])
+def delete_account(user_id):
+    """
+    Delete user account
+    """
+    user = User.query.get_or_404(user_id)
+    if not g.user or g.user.id != user_id:
+        flash("Access unauthorized.", "danger")
+        return redirect("/")
+    do_logout()
+    db.session.delete(user)
+    db.session.commit()
+
+    flash("Account deleted successfully.", "success")
+    return redirect("/")
+
+
+# FOLDER ROUTES
+
+
+@app.route('/<int:user_id>/folders')
+def show_folders(user_id):
+    """
+    Show all user folders 
+    """
+    user = User.query.get_or_404(user_id)
+    folders = Folder.query.filter_by(user_id=user_id).all()
+    return render_template('folders.html', user=g.user, folders=folders)
+
+
+@app.route('/folders/<int:folder_id>')
+def show_folder_contents(folder_id):
+    """
+    Show contents inside folder
+    """
+    folder = Folder.query.get_or_404(folder_id)
+    summaries = Summary.query.filter_by(folder_id=folder.id).all()
+
+    return render_template('show_folder_contents.html', folder=folder, user=g.user, summaries=summaries)
+
+
+@app.route('/folders/<int:folder_id>/delete', methods=["POST"])
+def delete_folder(folder_id):
+    if not g.user:
+        flash("Access unauthorized.", "danger")
+        return redirect(url_for('show_login_form'))
+
+    folder = Folder.query.get_or_404(folder_id)
+
+    # Optional: Check if the folder belongs to the logged-in user
+    if folder.user_id != g.user.id:
+        flash("Access unauthorized.", "danger")
+        return redirect(url_for('show_login_form'))
+
+    db.session.delete(folder)
+    db.session.commit()
+
+    return redirect(url_for('show_folders', user_id=g.user.id))
 
 
 if __name__ == '__main__':

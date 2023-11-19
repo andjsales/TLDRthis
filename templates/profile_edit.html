@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<h1>Edit Profile Details:</h1>
+<hr><br>
+
+<form action="{{ url_for('edit_profile', user_id=user.id) }}" method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.username.label }} {{ form.username(value=user.username) }}
+        <br><br>
+
+        {{ form.email.label }} {{ form.email(value=user.email) }}
+        <br><br>
+
+        {{ form.first_name.label }} {{ form.first_name(value=user.first_name) }}
+        <br><br>
+
+        {{ form.last_name.label }} {{ form.last_name(value=user.last_name) }}
+        <br><br>
+    </div>
+    <br>
+    <button type="submit">Save Changes</button>
+</form>
+{% endblock %}

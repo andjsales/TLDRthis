@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
-{% block title %}Saved Summaries{% endblock %}
+{% block title %}History{% endblock %}
 
 {% block content %}
-<h1>{{ user.username}}'s Saved Summaries</h1>
+<h1>{{ user.username}}'s History</h1>
 <hr>
 <br>
 
@@ -10,6 +10,7 @@
 <div class="container-sm">
     <h2>{{ summary.title }}</h2>
     <p>{{ summary.summary_text }}</p>
+    <a href="{{ url_for('summary', summary_id=summary.id)}}">View more</a>
     <br>
     <hr>
 </div>

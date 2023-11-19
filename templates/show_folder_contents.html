@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Folder Contents{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('show_folders', user_id=user.id) }}">
+    << Folders</a>
+        <br><br>
+
+        <h1>{{ folder.folder_name.capitalize() }}</h1>
+        <br>
+        <h4>Saved TLDRs:</h4>
+        <hr>
+
+        {% if summaries %}
+        <ul>
+            {% for summary in summaries %}
+            <li>
+                <a href="{{ url_for('summary', summary_id=summary.id) }}">{{ summary.title.capitalize() }}</a>
+            </li>
+            <hr>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No summaries found in this folder.</p>
+        {% endif %}
+
+        {% endblock %}

@@ -2,5 +2,21 @@
 {% block title %}Profile{% endblock %}
 
 {% block content %}
-<a href="{{ url_for('show_summaries', user_id=user.id) }}">View Summaries</a>
+<h1>Profile</h1>
+<hr><br>
+<a href="{{ url_for('edit_profile', user_id=user.id) }}">Edit Profile</a>
+<br>
+<a href="{{ url_for('show_folders', user_id=user.id) }}">Folders</a>
+<br>
+<a href="{{ url_for('show_summaries', user_id=user.id) }}">History</a>
+<br><br>
+<hr><br>
+<a href="{{ url_for('logout')}}">Logout</a>
+<br><br>
+<hr><br>
+<form action="{{ url_for('delete_account', user_id=user.id) }}" method="POST"
+    onsubmit="return confirm('Are you sure you want to delete your account?');">
+    <button type="submit" class="btn btn-danger">Delete Account</button>
+</form>
+
 {% endblock %}

@@ -2,17 +2,20 @@
 {% block title %}Homepage{% endblock %}
 
 {% block content %}
-<h1>TLDRthis</h1>
+<p>too lazy to read ?</p>
+<p>.</p>
+<p>.</p>
+<h3>tldr it.</h3>
 <hr>
-<form action="{{ url_for('summary_form') }}" method="POST">
+<form action="{{ url_for('homepage') }}" method="POST">
     {{ form.hidden_tag() }}
 
     <div>
-        {{ form.title.label }}
-        {{ form.title }}
-        <br><br>
-        {{ form.url.label }}
+        {{ form.url.label }} <br>
         {{ form.url }}
+        <br><br>
+        {{ form.title.label }} <br>
+        {{ form.title }}
         {% if form.url.errors %}
         <ul class="errors">
             {% for error in form.url.errors %}
@@ -25,5 +28,37 @@
     <div>
         <button type="submit" class="btn btn-primary btn-lg">tldr</button>
     </div>
+    <hr>
 </form>
+
+{% if summary %}
+<h1>TLDR Result:</h1><br>
+<div class="container">
+    <div>
+        <h2>{{ summary.title }}</h2>
+        <p>{{ summary.summary_text }}</p>
+    </div>
+    <br>
+
+
+    <!-- Form for saving summary to an existing folder -->
+    <form action="{{ url_for('save_summary', summary_id=summary.id) }}" method="POST" id="saveForm">
+        <label for="folder-select">Save to folder?</label><br>
+        <select name="folder" id="folder-select">
+            {% for folder in folders %}
+            <option value="{{folder.id}}">{{ folder.folder_name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <button type="submit">Save</button>
+    </form><br><br>
+
+    <!-- Form for creating a new folder -->
+    <form action="{{ url_for('save_summary', summary_id=summary.id) }}" method="POST">
+        <input type="text" name="newFolderName"><br><br>
+        <button type="submit">Create new folder</button>
+    </form>
+    <br>
+
+</div>
+{% endif %}
 {% endblock %}
