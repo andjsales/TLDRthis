@@ -84,10 +84,6 @@ def homepage():
     summary = None
     if g.user:
         folders = Folder.query.filter_by(user_id=g.user.id).all()
-    # else:
-    #     folders = []
-    #     flash("Please log in to view and save summaries.", "info")
-    #     return redirect(url_for('show_login_form'))
     if form.validate_on_submit():
         summary_data = fetch_summary(form.url.data)
         summary = Summary(
@@ -139,6 +135,9 @@ def show_login_form():
 
 @app.route('/logout')
 def logout():
+    """
+    Logout g.user
+    """
     do_logout()
     return redirect('/login')
 
@@ -164,7 +163,6 @@ def save_summary(summary_id):
     """
     new_folder_name = request.form.get('newFolderName')
     summary = Summary.query.get_or_404(summary_id)
-
     if not g.user:
         flash('You need to be logged in to save summaries.', 'warning')
         return redirect(url_for('login'))
@@ -246,6 +244,9 @@ def edit_profile(user_id):
 
 @app.route('/delete_account/<int:user_id>', methods=["POST"])
 def delete_account(user_id):
+    """
+    Delete user account
+    """
     if not g.user or g.user.id != user_id:
         flash("Access unauthorized.", "danger")
         return redirect("/")
@@ -286,6 +287,9 @@ def show_folder_contents(folder_id):
 
 @app.route('/folders/<int:folder_id>/delete', methods=["POST"])
 def delete_folder(folder_id):
+    """
+    Delete folder
+    """
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect(url_for('show_login_form'))
@@ -301,10 +305,12 @@ def delete_folder(folder_id):
 
 @app.route('/<int:user_id>/folders', methods=["GET", "POST"])
 def new_folder(user_id):
+    """
+    Create a new folder
+    """
     if not g.user or g.user.id != user_id:
         flash("Access unauthorized.", "danger")
         return redirect("/login")
-
     if request.method == "POST":
         folder_name = request.form.get('folderName')
         if folder_name:
