@@ -27,7 +27,6 @@ The TLDRthis app utilizes the tldrthis.p.rapidapi.com API for fetching summaries
 - Frontend: HTML, CSS, JavaScript, Bootstrap
 - Backend: Python, Flask
 - Database: PostgreSQL
-- Deployment: [Deployment Platform]
 - Additional Tools: SQLAlchemy, Flask-WTF, Jinja2
 
 ### Additional Notes
