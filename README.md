@@ -21,7 +21,7 @@ TLDRthis is a web application designed to provide quick and concise summaries of
 - Profile Management: Users can edit their profile details or delete their account.
 
 ### API Usage
-The TLDRthis app utilizes the tldrthis.p.rapidapi.com API for fetching summaries of web content. The API provides reliable and quick content analysis and summarization.
+The API provides reliable and quick content analysis and summarization.
 
 ### Technology Stack
 - Frontend: HTML, CSS, JavaScript, Bootstrap
