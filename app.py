@@ -201,7 +201,7 @@ def delete_summary(summary_id):
 
     db.session.delete(summary)
     db.session.commit()
-    flash('Summary deleted successfully.', 'success')
+    flash('Summary deleted successfully. Redirecting to folders', 'success')
     return redirect(url_for('show_folder_contents', user_id=g.user.id, folder_id=folder_id))
 
 
@@ -260,7 +260,7 @@ def delete_account(user_id):
     db.session.delete(user)
     db.session.commit()
 
-    flash("Account deleted successfully.", "success")
+    flash("Account deleted successfully. Redirecting to Homepage", "success")
     return redirect("/")
 
 
@@ -303,6 +303,7 @@ def delete_folder(folder_id):
 
     db.session.delete(folder)
     db.session.commit()
+    flash("Folder deleted successfully.", "success")
 
     return redirect(url_for('show_folders', user_id=g.user.id))
 

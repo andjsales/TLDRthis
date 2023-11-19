@@ -7,44 +7,65 @@
         <title>{% block title %}{% endblock %}</title>
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <style>
+            body,
+            html {
+                font-size: 1rem;
+                /* Adjust base font size */
+            }
+
+            .navbar {
+                padding: 0.5rem 3rem;
+                /* Smaller padding for navbar */
+            }
+
+            .container,
+            .container-fluid {
+                padding-top: 2rem;
+                padding-left: 5rem;
+                padding-right: 5rem;
+                /* Reduced container padding */
+            }
+
+            /* Add other global styles as needed */
+        </style>
+
     </head>
 
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container-fluid">
-                <a href="{{ url_for('homepage') }}" class="navbar-brand" style="font-size: 48px;">TLDR</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+            <a href="{{ url_for('homepage') }}" class="navbar-brand" style="font-size: 48px;">TLDR</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        {% if user %}
-                        <!-- Dropdown Menu -->
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ user.username.capitalize() }}
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ url_for('profile', user_id=user.id) }}">Profile</a>
-                                <a class="dropdown-item" href="{{ url_for('show_folders', user_id=user.id)}}">My
-                                    Folders</a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{{ url_for('logout')}}">Logout</a>
-                            </div>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('show_login_form')}}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('signup')}}">Signup</a>
-                        </li>
-                        {% endif %}
-                    </ul>
-                </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if user %}
+                    <!-- Dropdown Menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ user.username.capitalize() }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ url_for('profile', user_id=user.id) }}">Profile</a>
+                            <a class="dropdown-item" href="{{ url_for('show_folders', user_id=user.id)}}">My
+                                Folders</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{ url_for('logout')}}">Logout</a>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('show_login_form')}}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('signup')}}">Signup</a>
+                    </li>
+                    {% endif %}
+                </ul>
             </div>
         </nav>
 
@@ -62,7 +83,7 @@
             {% endfor %}
             {% endif %}
             {% endwith %}
-            <br>
+
             {% block content %}
             {% endblock %}
         </div>
