@@ -3,12 +3,12 @@ import os
 from unittest import TestCase
 from models import db, connect_db, User, Summary, Folder
 
-os.environ['DATABASE_URL'] = "postgresql:///tldrthis_test"
+os.environ['DATABASE_URL'] = "postgresql:///tldrthis"
 
 
 app.config['TESTING'] = True
 
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///tldrthis_test"
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///tldrthis"
 app.config['SQLALCHEMY_ECHO'] = False
 
 connect_db(app)
