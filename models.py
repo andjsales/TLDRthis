@@ -5,8 +5,12 @@ bcrypt = Bcrypt()
 db = SQLAlchemy()
 
 
+# def connect_db(app):
+#     db.app = app
+#     db.init_app(app)
+
 def connect_db(app):
-    db.app = app
+    """Connect the database to the provided Flask app."""
     db.init_app(app)
 
 

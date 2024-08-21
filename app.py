@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, request, g, session, flash, 
 import requests
 import bcrypt
 import os
-from flask_sqlalchemy import SQLAlchemy
 from models import db, connect_db, User, Summary, SavedSummary, Folder
 from forms import SummarizeContent, LoginForm, SignupForm, EditProfileForm
 from secrets_1 import key
@@ -12,22 +11,19 @@ CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
 
-# Get the DATABASE_URL environment variable
+# Handle DATABASE_URL replacement
 database_url = os.getenv('DATABASE_URL')
-
-# Replace 'postgres://' with 'postgresql://' for compatibility with SQLAlchemy
 if database_url and database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
 
-# Set the SQLAlchemy database URI
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize SQLAlchemy and Flask-Migrate
-db = SQLAlchemy(app)
+db.init_app(app)  # Initialize the db with the Flask app
 migrate = Migrate(app, db)
 
-# Connect the database to the Flask app
+# Connect the db (this just binds the existing db instance to the app)
 connect_db(app)
 
 base_url = 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-url/'
