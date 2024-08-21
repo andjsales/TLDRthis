@@ -1,8 +1,7 @@
-import logging
+import os
 from logging.config import fileConfig
 
 from flask import current_app
-
 from alembic import context
 
 # this is the Alembic Config object, which provides
@@ -12,7 +11,8 @@ config = context.config
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 fileConfig(config.config_file_name)
-logger = logging.getLogger('alembic.env')
+# logger = logging.getLogger('alembic.env')
+config.set_main_option('sqlalchemy.url', os.environ.get('DATABASE_URL'))
 
 
 def get_engine():
