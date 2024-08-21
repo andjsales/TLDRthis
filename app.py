@@ -11,13 +11,23 @@ from flask_migrate import Migrate
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///tldrthis'
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+
+# Get the DATABASE_URL environment variable
+database_url = os.getenv('DATABASE_URL')
+
+# Replace 'postgres://' with 'postgresql://' for compatibility with SQLAlchemy
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+# Set the SQLAlchemy database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize SQLAlchemy and Flask-Migrate
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-# app.config['SECRET_KEY'] = 'mysecret'
 
+# Connect the database to the Flask app
 connect_db(app)
 
 base_url = 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-url/'
