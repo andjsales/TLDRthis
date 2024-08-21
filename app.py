@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, request, g, session, flash, url_for
 import requests
 import bcrypt
+import os
 from flask_sqlalchemy import SQLAlchemy
 from models import db, connect_db, User, Summary, SavedSummary, Folder
 from forms import SummarizeContent, LoginForm, SignupForm, EditProfileForm
@@ -10,10 +11,12 @@ from flask_migrate import Migrate
 CURR_USER_KEY = "curr_user"
 
 app = Flask(__name__)
-migrate = Migrate(app, db)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///tldrthis'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///tldrthis'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = 'mysecret'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+# app.config['SECRET_KEY'] = 'mysecret'
 
 connect_db(app)
 
@@ -327,4 +330,4 @@ def new_folder(user_id):
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run()
