@@ -11,7 +11,8 @@ db = SQLAlchemy()
 
 def connect_db(app):
     """Connect the database to the provided Flask app."""
-    db.init_app(app)
+    # db.init_app(app)
+    pass
 
 
 class User(db.Model):

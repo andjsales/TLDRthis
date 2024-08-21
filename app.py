@@ -23,7 +23,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)  # Initialize the db with the Flask app
 migrate = Migrate(app, db)
 
-# Connect the db (this just binds the existing db instance to the app)
+# Connect the db (empty function now)
 connect_db(app)
 
 base_url = 'https://tldrthis.p.rapidapi.com/v1/model/abstractive/summarize-url/'
