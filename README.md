@@ -23,9 +23,12 @@ TLDRthis is a web application designed to provide quick and concise summaries of
 
 4. Make sure to set environment variables:
 
-`export DATABASE_URL="postgresql://username:password@localhost/tldrthis_db"`  
-`export SECRET_KEY="your_secret_key`  
-5. Initialize database: `flask db upgrade`  
+```bash
+export DATABASE_URL="postgresql://username:password@localhost/tldrthis_db"
+export SECRET_KEY="your_secret_key
+```
+
+5. Initialize database: `flask db upgrade`
 6. `flask run`
 
 ## Features
