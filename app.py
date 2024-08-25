@@ -18,6 +18,9 @@ if database_url and database_url.startswith('postgres://'):
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.urandom(24).hex()
+print("Secret Key:", app.config['SECRET_KEY'])
+
 
 # Initialize SQLAlchemy and Flask-Migrate
 db.init_app(app)  # Initialize the db with the Flask app
