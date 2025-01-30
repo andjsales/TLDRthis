@@ -5,10 +5,6 @@ bcrypt = Bcrypt()
 db = SQLAlchemy()
 
 
-# def connect_db(app):
-#     db.app = app
-#     db.init_app(app)
-
 def connect_db(app):
     """Connect the database to the provided Flask app."""
     # db.init_app(app)
@@ -42,6 +38,7 @@ class User(db.Model):
         )
 
         db.session.add(user)
+        db.session.commit()
         return user
 
     @classmethod
@@ -83,6 +80,7 @@ class Summary(db.Model):
     created_at = db.Column(
         db.DateTime, default=db.func.current_timestamp(), nullable=False)
     folder_id = db.Column(db.Integer, db.ForeignKey('folders.id'))
+    folder = db.relationship('Folder', back_populates="summaries")
 
 
 class SavedSummary(db.Model):
@@ -101,4 +99,88 @@ class Folder(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     folder_name = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    summaries = db.relationship('Summary', backref='folder', lazy=True)
+    summaries = db.relationship(
+        'Summary', back_populates='folder', lazy='dynamic')
+
+# from flask_sqlalchemy import SQLAlchemy
+# from flask_bcrypt import Bcrypt
+
+# bcrypt = Bcrypt()
+# db = SQLAlchemy()
+
+
+# def connect_db(app):
+#     """Connect the database to the provided Flask app."""
+#     # db.init_app(app)
+#     pass
+
+
+# class User(db.Model):
+#     __tablename__ = "users"
+
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     username = db.Column(db.String(20), unique=True, nullable=False)
+#     password = db.Column(db.Text, nullable=False)
+#     email = db.Column(db.String(50), nullable=False)
+#     first_name = db.Column(db.String(50), nullable=False)
+#     last_name = db.Column(db.String(50), nullable=False)
+
+#     @classmethod
+#     def signup(cls, first_name, last_name, username, email, password):
+#         """Hashes password and adds user to system."""
+#         hashed_pwd = bcrypt.generate_password_hash(password).decode('UTF-8')
+
+#         user = cls(
+#             first_name=first_name,
+#             last_name=last_name,
+#             username=username,
+#             email=email,
+#             password=hashed_pwd,
+#         )
+
+#         db.session.add(user)
+#         db.session.commit()
+#         return user
+
+#     @classmethod
+#     def authenticate(cls, username, password):
+#         """If can't find matching user (or if password is wrong), returns False."""
+#         user = cls.query.filter_by(username=username).first()
+#         if user and bcrypt.check_password_hash(user.password, password):
+#             return user
+#         return False
+
+
+# class Summary(db.Model):
+#     __tablename__ = "summaries"
+
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+#     original_url = db.Column(db.String(255), nullable=False)
+#     summary_text = db.Column(db.Text, nullable=False)
+#     title = db.Column(db.Text, nullable=False)
+#     created_at = db.Column(
+#         db.DateTime, default=db.func.current_timestamp(), nullable=False)
+#     folder_id = db.Column(db.Integer, db.ForeignKey('folders.id'))
+
+#     folder = db.relationship('Folder', back_populates="summaries")
+
+
+# class Folder(db.Model):
+#     __tablename__ = "folders"
+
+#     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     folder_name = db.Column(db.Text, nullable=False)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+#     summaries = db.relationship(
+#         'Summary', back_populates='folder', lazy='dynamic')
+
+# # Comment out or delete SavedSummary if redundant
+# # class SavedSummary(db.Model):
+# #     __tablename__ = "saved_summaries"
+
+# #     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+# #     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+# #     summary_id = db.Column(db.Integer, db.ForeignKey(
+# #         'summaries.id'), nullable=False)
+# #     folder_name = db.Column(db.Text, nullable=False)

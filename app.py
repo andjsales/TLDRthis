@@ -94,18 +94,26 @@ def homepage():
     """
     form = SummarizeContent()
     summary = None
+    folders = None
     if g.user:
         folders = Folder.query.filter_by(user_id=g.user.id).all()
     if form.validate_on_submit():
         summary_data = fetch_summary(form.url.data)
-        summary = Summary(
-            original_url=form.url.data,
-            summary_text=' '.join(summary_data['summary']),
-            user_id=g.user.id,
-            title=form.title.data)
-        db.session.add(summary)
-        db.session.commit()
-    return render_template('homepage.html', form=form, summary=summary, user=g.user)
+        if g.user:
+            summary = Summary(
+                original_url=form.url.data,
+                summary_text=' '.join(summary_data['summary']),
+                user_id=g.user.id,
+                title=form.title.data)
+            db.session.add(summary)
+            db.session.commit()
+        else:
+            summary = type('obj', (object,), {
+                'summary_text': ' '.join(summary_data['summary']),
+                'title': form.title.data,
+                'id': None  # Ensure there is an 'id' attribute even if it's None
+            })
+    return render_template('homepage.html', form=form, summary=summary, folders=folders, user=g.user)
 
 
 @app.route('/signup', methods=["GET", "POST"])
@@ -154,7 +162,7 @@ def logout():
     return redirect('/login')
 
 
-# SUMMARY ROUTES
+# MARK: SUMMARY ROUTES
 
 
 @app.route('/summary/<int:summary_id>', methods=['GET', 'POST'])

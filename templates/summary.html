@@ -14,30 +14,38 @@
 
 <a href="{{ url_for('homepage') }}">Back to Homepage</a>
 <br>
-<!-- <a href="{{ url_for('delete_summary', summary_id=summary.id)}}">Delete</a> -->
-<form action="{{ url_for('delete_summary', summary_id=summary.id) }}" method="POST"
-    onsubmit="return confirm('Are you sure you want to delete this summary?');">
-    <button type="submit" class="btn btn-danger">Delete</button>
-</form>
 
-<br><br>
-<hr>
-<!-- Form for saving summary to an existing folder -->
-<form action="{{ url_for('save_summary', summary_id=summary.id) }}" method="POST" id="saveForm">
-    <label for="folder-select">Save to folder?</label><br>
-    <select name="folder" id="folder-select">
-        {% for folder in folders %}
-        <option value="{{folder}}">{{ folder.folder_name }}</option>
-        {% endfor %}
-        <option value="new">Create New Folder</option>
-    </select>
-    <button type="submit">Save</button>
-</form>
+{% if summary %}
 <br>
-<!-- Form for creating a new folder -->
-<form action="{{ url_for('save_summary', summary_id=summary.id) }}" method="POST">
-    <label for="new-folder">New Folder</label><br>
-    <input type="text" name="newFolderName">
-    <button type="submit">Create</button>
-</form>
+<h1>TLDR Result:</h1><br>
+<div class="container">
+    <div>
+        <h2>{{ summary.title }}</h2>
+        <p>{{ summary.summary_text }}</p>
+    </div>
+    <br>
+    {% if summary.id %}
+    <!-- Form for saving summary to an existing folder -->
+    <form action="{{ url_for('save_summary', summary_id=summary.id) }}" method="POST" id="saveForm">
+        <label for="folder-select">Save to folder?</label><br>
+        <select name="folder" id="folder-select">
+            {% for folder in folders %}
+            <option value="{{ folder.id }}">{{ folder.folder_name }}</option>
+            {% endfor %}
+        </select><br><br>
+        <button type="submit">Save</button>
+    </form><br><br>
+
+    <!-- Form for creating a new folder -->
+    <form action="{{ url_for('save_summary', summary_id=summary.id) }}" method="POST">
+        <input type="text" name="newFolderName"><br><br>
+        <button type="submit">Create new folder</button>
+    </form>
+    <br>
+    {% else %}
+    <p>No summary available to save or create folders.</p>
+    {% endif %}
+</div>
+{% endif %}
+
 {% endblock %}
